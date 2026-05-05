@@ -1,0 +1,15 @@
+C:\Users\LKark\RiderProjects\Order Management API\Order.Application\bin\Debug\net9.0\Order.Application.deps.json
+C:\Users\LKark\RiderProjects\Order Management API\Order.Application\bin\Debug\net9.0\Order.Application.dll
+C:\Users\LKark\RiderProjects\Order Management API\Order.Application\bin\Debug\net9.0\Order.Application.pdb
+C:\Users\LKark\RiderProjects\Order Management API\Order.Application\obj\Debug\net9.0\Order.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\LKark\RiderProjects\Order Management API\Order.Application\obj\Debug\net9.0\Order.Application.AssemblyInfoInputs.cache
+C:\Users\LKark\RiderProjects\Order Management API\Order.Application\obj\Debug\net9.0\Order.Application.AssemblyInfo.cs
+C:\Users\LKark\RiderProjects\Order Management API\Order.Application\obj\Debug\net9.0\Order.Application.csproj.CoreCompileInputs.cache
+C:\Users\LKark\RiderProjects\Order Management API\Order.Application\obj\Debug\net9.0\Order.Application.dll
+C:\Users\LKark\RiderProjects\Order Management API\Order.Application\obj\Debug\net9.0\refint\Order.Application.dll
+C:\Users\LKark\RiderProjects\Order Management API\Order.Application\obj\Debug\net9.0\Order.Application.pdb
+C:\Users\LKark\RiderProjects\Order Management API\Order.Application\obj\Debug\net9.0\ref\Order.Application.dll
+C:\Users\LKark\RiderProjects\Order Management API\Order.Application\bin\Debug\net9.0\Order.Core.dll
+C:\Users\LKark\RiderProjects\Order Management API\Order.Application\bin\Debug\net9.0\Order.Core.pdb
+C:\Users\LKark\RiderProjects\Order Management API\Order.Application\obj\Debug\net9.0\Order.Application.csproj.AssemblyReference.cache
+C:\Users\LKark\RiderProjects\Order Management API\Order.Application\obj\Debug\net9.0\Order.Ap.8554589A.Up2Date
