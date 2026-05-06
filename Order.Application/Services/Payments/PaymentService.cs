@@ -2,6 +2,7 @@
 using Order.Application.Dtos.Payment;
 using Order.Application.Interfaces;
 using Order.Core.Entities;
+using Order.Core.Exceptions;
 using Order.Core.Interfaces;
 
 namespace Order.Application.Services.Payments;
@@ -25,6 +26,8 @@ public class PaymentService : IPaymentService
     public async Task<PaymentDto> GetById(int id)
     {
         var payment = await _repository.GetByIdAsync(id);
+        if (payment == null)
+            throw new NotFoundException("Payment not found");
         return _mapper.Map<PaymentDto>(payment);
     }
 
@@ -38,11 +41,5 @@ public class PaymentService : IPaymentService
     {
         var payments = await _repository.GetAllUserPayments(userId);
         return _mapper.Map<List<PaymentDto>>(payments);
-    }
-
-    public async Task Delete(int id)
-    {
-        var payment = await _repository.GetByIdAsync(id);
-        await _repository.DeleteAsync(payment);
     }
 }

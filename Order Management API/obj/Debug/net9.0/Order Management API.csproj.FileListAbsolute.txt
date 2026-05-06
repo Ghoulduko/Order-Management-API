@@ -170,3 +170,4 @@ C:\Users\LKark\RiderProjects\Order Management API\Order Management API\bin\Debug
 C:\Users\LKark\RiderProjects\Order Management API\Order Management API\bin\Debug\net9.0\Order.Application.dll
 C:\Users\LKark\RiderProjects\Order Management API\Order Management API\bin\Debug\net9.0\Order.Application.pdb
 C:\Users\LKark\RiderProjects\Order Management API\Order Management API\bin\Debug\net9.0\BCrypt.Net-Next.dll
+C:\Users\LKark\RiderProjects\Order Management API\Order Management API\obj\Debug\net9.0\Order Management API.sourcelink.json

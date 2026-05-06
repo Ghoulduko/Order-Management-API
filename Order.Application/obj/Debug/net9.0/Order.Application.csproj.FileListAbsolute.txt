@@ -13,3 +13,4 @@ C:\Users\LKark\RiderProjects\Order Management API\Order.Application\bin\Debug\ne
 C:\Users\LKark\RiderProjects\Order Management API\Order.Application\bin\Debug\net9.0\Order.Core.pdb
 C:\Users\LKark\RiderProjects\Order Management API\Order.Application\obj\Debug\net9.0\Order.Application.csproj.AssemblyReference.cache
 C:\Users\LKark\RiderProjects\Order Management API\Order.Application\obj\Debug\net9.0\Order.Ap.8554589A.Up2Date
+C:\Users\LKark\RiderProjects\Order Management API\Order.Application\obj\Debug\net9.0\Order.Application.sourcelink.json

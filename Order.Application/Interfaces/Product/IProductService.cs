@@ -5,8 +5,9 @@ namespace Order.Application.Interfaces;
 public interface IProductService
 {
     Task Add(AddProductDto request);
-    Task<ProductDto> GetById(int id);
     Task<List<ProductDto>> GetAll();
-    Task DecreaseStock(int productId, int quantity);
+    Task<List<ProductDto>> SearchProductByName(string name);
+    Task<ProductDto> GetById(int id);
+    Task IncreaseStock(UpdateProductStockDto req);
     Task Delete(int id);
 }

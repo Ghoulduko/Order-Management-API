@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Order_Management_API.Middlewares;
+using Order.Application.Dtos.Product;
+using Order.Application.Dtos.User;
 using Order.Application.Interfaces;
+using Order.Application.Interfaces.Helper;
 using Order.Application.Mapper;
 using Order.Application.Services.Carts;
 using Order.Application.Services.Notifications;
@@ -43,6 +46,9 @@ builder.Services.AddScoped<ICartRepository, CartRepository>();
 // Product Services
 builder.Services.AddScoped<IProductService, ProductService>();
 
+// Product InventoryService
+builder.Services.AddScoped<InventoryService>();
+
 // User Services
 builder.Services.AddScoped<IUserService, UserService>();
 
@@ -54,6 +60,9 @@ builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 // Order Observers
 builder.Services.AddTransient<IOrderObserver, EmailNotificationObserver>();
 
+// Validators
+builder.Services.AddScoped<IValidator<AddProductDto>, AddProductValidator>();
+builder.Services.AddScoped<IValidator<AddUserDto>, AddUserValidator>();
 
 builder.Services.AddAutoMapper(cfg => { }, typeof(MappingProfile));
 

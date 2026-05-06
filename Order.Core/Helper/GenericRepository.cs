@@ -28,12 +28,9 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return await _dbSet.ToListAsync();
     }
     
-    public async Task<T> GetByIdAsync(int id)
+    public async Task<T?> GetByIdAsync(int id)
     {
-        var entity = await _dbSet.FindAsync(id);
-        if (entity == null)
-            throw new NotFoundException($"{typeof(T).Name} with id {id} not found");
-        return entity;
+        return await _dbSet.FindAsync(id);
     }
 
     public async Task DeleteAsync(T entity)
@@ -52,12 +49,9 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return await _dbSet.AnyAsync(predicate);
     }
     
-    public async Task<T> GetFirstAsync(Expression<Func<T, bool>> predicate)
+    public async Task<T?> GetFirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
     {
-        var entity = await _dbSet.FirstOrDefaultAsync(predicate);
-        if (entity == null)
-            throw new NotFoundException($"{typeof(T).Name} not found");
-        return entity;
+        return await _dbSet.FirstOrDefaultAsync(predicate);
     }
 
     public async Task SaveAsync()

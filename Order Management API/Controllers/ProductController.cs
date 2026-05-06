@@ -24,18 +24,33 @@ public class ProductController : ControllerBase
         return TypedResults.Ok($"Successfully added product: {req.Name}");
     }
 
-    [HttpGet("GetById/{id}")]
-    public async Task<Ok<ProductDto>> GetById(int id)
+    [HttpPatch("IncreaseStock")]
+    public async Task<Ok<string>> IncreaseStock([FromBody] UpdateProductStockDto req)
     {
-        var product = await _productService.GetById(id);
-        return TypedResults.Ok(product);
+        await _productService.IncreaseStock(req);
+        return TypedResults.Ok($"Successfully increased product stock by: {req.quantity}");
     }
+
+    
 
     [HttpGet("GetAll")]
     public async Task<Ok<List<ProductDto>>> GetAll()
     {
         var products = await _productService.GetAll();
         return TypedResults.Ok(products);
+    }
+
+    [HttpGet("SearchProductByName")]
+    public async Task<Ok<List<ProductDto>>> SearchProductByName([FromQuery] string? name)
+    {
+        return TypedResults.Ok(await _productService.SearchProductByName(name));
+    }
+    
+    [HttpGet("GetById/{id}")]
+    public async Task<Ok<ProductDto>> GetById(int id)
+    {
+        var product = await _productService.GetById(id);
+        return TypedResults.Ok(product);
     }
 
     [HttpDelete("DeleteById/{id}")]

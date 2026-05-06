@@ -39,12 +39,4 @@ public class PaymentController : ControllerBase
         var payment = await _paymentService.GetById(id);
         return TypedResults.Ok(payment);
     }
-
-    [HttpDelete("DeleteById/{id}")]
-    public async Task<Ok<string>> DeleteById(int id)
-    {
-        await _paymentService.Delete(id);
-        return TypedResults.Ok("Payment deleted successfully");
-    }
-    
 }

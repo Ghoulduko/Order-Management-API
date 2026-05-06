@@ -2,6 +2,7 @@
 using Order.Application.Dtos.Order;
 using Order.Application.Dtos.Payment;
 using Order.Application.Interfaces;
+using Order.Application.Services.Products;
 using Order.Core.Entities;
 using Order.Core.Enums;
 using Order.Core.Interfaces;
@@ -12,15 +13,15 @@ public class OrderService  : IOrderService
 {
     private readonly IOrderRepository _repository;
     private readonly ICartRepository _cartRepository;
-    private readonly IProductService _productService;
+    private readonly InventoryService _inventoryService;
     private readonly List<IOrderObserver> _observers;
     private readonly IMapper _mapper;
     
-    public OrderService(IOrderRepository repository, ICartRepository cartRepository, IProductService productService, IEnumerable<IOrderObserver> observers, IMapper mapper)
+    public OrderService(IOrderRepository repository, ICartRepository cartRepository, InventoryService inventoryService, IEnumerable<IOrderObserver> observers, IMapper mapper)
     {
         _repository = repository;
         _cartRepository = cartRepository;
-        _productService = productService;
+        _inventoryService = inventoryService;
         _observers = observers.ToList();
         _mapper = mapper;
     }
@@ -59,8 +60,9 @@ public class OrderService  : IOrderService
         
         foreach (var orderItem in orderItems)
         {
-            await _productService.DecreaseStock(orderItem.ProductId, orderItem.Quantity);
+            await _inventoryService.DecrementStock(orderItem.ProductId, orderItem.Quantity);
         }
+        
         await _repository.SaveAsync();
 
         var orderDto = _mapper.Map<CustomerOrderDto>(order);
@@ -74,7 +76,7 @@ public class OrderService  : IOrderService
     {
         var order = await _repository.GetOrderById(id);
         if (order.UserId != userId) 
-            throw new UnauthorizedAccessException("You are not authorized to view this order.");
+            throw new UnauthorizedAccessException("Order not found.");
         return _mapper.Map<CustomerOrderDto>(order);
     }
     
@@ -101,7 +103,7 @@ public class OrderService  : IOrderService
         var order = await _repository.GetOrderById(req.OrderId);
         
         if (order.UserId != req.UserId)
-            throw new UnauthorizedAccessException("You are not authorized to delete this order.");
+            throw new UnauthorizedAccessException("Order not found.");
         
         await _repository.DeleteAsync(order);
     }

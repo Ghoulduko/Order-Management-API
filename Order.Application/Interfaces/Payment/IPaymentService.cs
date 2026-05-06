@@ -9,5 +9,4 @@ public interface IPaymentService
     Task<PaymentDto> GetById(int id);
     Task<List<PaymentDto>> GetAllUserPayments(int userId);
     Task<List<PaymentDto>> GetAll();
-    Task Delete(int id);
 }

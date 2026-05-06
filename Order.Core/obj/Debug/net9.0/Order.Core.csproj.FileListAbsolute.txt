@@ -12,3 +12,4 @@ C:\Users\LKark\RiderProjects\Order Management API\Order.Core\obj\Debug\net9.0\re
 C:\Users\LKark\RiderProjects\Order Management API\Order.Core\obj\Debug\net9.0\Order.Core.pdb
 C:\Users\LKark\RiderProjects\Order Management API\Order.Core\obj\Debug\net9.0\Order.Core.genruntimeconfig.cache
 C:\Users\LKark\RiderProjects\Order Management API\Order.Core\obj\Debug\net9.0\ref\Order.Core.dll
+C:\Users\LKark\RiderProjects\Order Management API\Order.Core\obj\Debug\net9.0\Order.Core.sourcelink.json
