@@ -13,14 +13,16 @@ public class OrderService  : IOrderService
 {
     private readonly IOrderRepository _repository;
     private readonly ICartRepository _cartRepository;
+    private readonly IPaymentFactory _paymentFactory;
     private readonly InventoryService _inventoryService;
     private readonly List<IOrderObserver> _observers;
     private readonly IMapper _mapper;
     
-    public OrderService(IOrderRepository repository, ICartRepository cartRepository, InventoryService inventoryService, IEnumerable<IOrderObserver> observers, IMapper mapper)
+    public OrderService(IOrderRepository repository, ICartRepository cartRepository, IPaymentFactory paymentFactory, InventoryService inventoryService, IEnumerable<IOrderObserver> observers, IMapper mapper)
     {
         _repository = repository;
         _cartRepository = cartRepository;
+        _paymentFactory = paymentFactory;
         _inventoryService = inventoryService;
         _observers = observers.ToList();
         _mapper = mapper;
@@ -29,6 +31,8 @@ public class OrderService  : IOrderService
     public async Task Add(PaymentMethod paymentMethod, int userId)
     {
         var userCart = await _cartRepository.GetUserCart(userId);
+
+        var chosenPaymentMethod = _paymentFactory.ChoosePaymentMethod(paymentMethod);
         
         if (userCart.CartItems == null || userCart.CartItems.Count == 0)
             throw new InvalidOperationException("No items found in cart to order");
@@ -54,7 +58,8 @@ public class OrderService  : IOrderService
                 PaidAt = DateTime.Now,
             }
         };
-        
+
+        chosenPaymentMethod.ProcessPayment();
         await _repository.AddAsync(order);
         await _cartRepository.ClearCart(userId);
         
