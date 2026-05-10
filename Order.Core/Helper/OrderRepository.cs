@@ -22,7 +22,7 @@ public class OrderRepository : GenericRepository<CustomerOrder>, IOrderRepositor
 
     public async Task<List<CustomerOrder>> GetAllUserOrders(int userId)
     {
-        return await BaseOrderQuery().Where(o => o.UserId == userId).ToListAsync();
+        return await BaseOrderQuery().Where(o => o.UserId == userId && !o.IsCanceled).ToListAsync();
     }
 
     public async Task<List<CustomerOrder>> GetAllOrders()
@@ -33,6 +33,15 @@ public class OrderRepository : GenericRepository<CustomerOrder>, IOrderRepositor
     public async Task<CustomerOrder> GetOrderById(int orderId)
     {
         var order = await BaseOrderQuery().FirstOrDefaultAsync(o => o.Id == orderId);
+        if (order == null)
+            throw new NotFoundException($"Order with id: {orderId} was not found");
+        return order;
+    }
+
+    public async Task<CustomerOrder> GetOrderByIdForUser(int orderId, int userId)
+    {
+        var order = await BaseOrderQuery()
+            .FirstOrDefaultAsync(o => o.Id == orderId && o.UserId == userId && !o.IsCanceled);
         if (order == null)
             throw new NotFoundException($"Order with id: {orderId} was not found");
         return order;

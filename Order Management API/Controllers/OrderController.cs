@@ -54,8 +54,8 @@ public class OrderController : ControllerBase
         return TypedResults.Ok(order);
     }
 
-    [HttpDelete("DeleteById/{id}")]
-    public async Task<Ok<string>> DeleteOrder(int id)
+    [HttpDelete("CancelOrderById/{id}")]
+    public async Task<Ok<string>> CancelOrder(int id)
     {
         DeleteOrderDto req = new DeleteOrderDto
         {
@@ -63,7 +63,7 @@ public class OrderController : ControllerBase
             UserId = userId
         };
         
-        await _orderService.DeleteById(req);
+        await _orderService.CancelOrderById(req);
         return TypedResults.Ok("Successfully deleted the order");
     }
 }

@@ -8,5 +8,6 @@ public interface IUserService
     Task<UserDto> GetById(int id);
     Task<UserDto> GetUserByEmail(string email);
     Task<List<UserDto>> GetAll();
+    Task<List<UserDto>> GetAllDeletedAccounts();
     Task Delete(int id);
 }

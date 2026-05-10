@@ -38,6 +38,7 @@ public class UserService : IUserService
             Username = req.Username,
             Email = req.Email,
             Password = BC.HashPassword(req.Password, 6),
+            IsDeleted = false,
         };
         
         
@@ -65,14 +66,23 @@ public class UserService : IUserService
     public async Task<List<UserDto>> GetAll()
     {
         var users = await _repository.GetAllAsync();
+        users = users.Where(u => !u.IsDeleted).ToList();
+        return _mapper.Map<List<UserDto>>(users);
+    }
+
+    public async Task<List<UserDto>> GetAllDeletedAccounts()
+    {
+        var users = await _repository.GetAllAsync();
+        users = users.Where(u => u.IsDeleted).ToList();
         return _mapper.Map<List<UserDto>>(users);
     }
 
     public async Task Delete(int id)
     {
         var user = await _repository.GetByIdAsync(id);
-        if (user == null)
+        if (user == null || user.IsDeleted)
             throw new NotFoundException("No user found with the provided id");
-        await _repository.DeleteAsync(user);
+        user.IsDeleted = true;
+        await _repository.SaveAsync();
     }
 }
