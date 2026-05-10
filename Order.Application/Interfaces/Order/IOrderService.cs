@@ -10,5 +10,5 @@ public interface IOrderService
     Task<List<CustomerOrderDto>> GetAllUserOrders(int userId);
     Task<CustomerOrderDto> GetByIdForUser(int id, int userId);
     Task<CustomerOrderDto> GetByIdForAdmin(int id);
-    Task DeleteById(DeleteOrderDto req);
+    Task CancelOrderById(DeleteOrderDto req);
 }

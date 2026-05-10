@@ -12,6 +12,8 @@ public class CustomerOrder
     public decimal Total { get; set; }
     public Payment? Payment { get; set; }
     public DateTime CreatedAt { get; set; }
+    
+    public bool IsCanceled { get; set; } = false;
     public int UserId { get; set; }
     public User? User { get; set; }
 }

@@ -30,6 +30,13 @@ public class UserController : ControllerBase
         return TypedResults.Ok(allUsers);
     }
 
+    [HttpGet("GetAllDeletedAccounts")]
+    public async Task<Ok<List<UserDto>>> GetAllDeletedAccounts()
+    {
+        var allUsers = await _userService.GetAllDeletedAccounts();
+        return TypedResults.Ok(allUsers);
+    }
+
     [HttpGet("GetUserById/{id}")]
     public async Task<Ok<UserDto>> GetUserById(int id)
     {

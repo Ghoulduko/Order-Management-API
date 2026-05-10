@@ -7,4 +7,5 @@ public interface IOrderRepository : IGenericRepository<CustomerOrder>
     Task<List<CustomerOrder>> GetAllUserOrders(int userId);
     Task<List<CustomerOrder>> GetAllOrders();
     Task<CustomerOrder> GetOrderById(int orderId);
+    Task<CustomerOrder> GetOrderByIdForUser(int orderId, int userId);
 }

@@ -50,6 +50,7 @@ public class OrderService  : IOrderService
             OrderItems = orderItems,
             Total =  totalPrice,
             CreatedAt = DateTime.Now,
+            IsCanceled =  false,
             UserId = userId,
             Payment = new Payment {
                 PaymentMethod =  paymentMethod,
@@ -77,39 +78,34 @@ public class OrderService  : IOrderService
         }
     }
 
-    public async Task<CustomerOrderDto> GetByIdForUser(int id, int userId)
+    public async Task<CustomerOrderDto> GetByIdForUser(int orderId, int userId)
     {
-        var order = await _repository.GetOrderById(id);
-        if (order.UserId != userId) 
-            throw new UnauthorizedAccessException("Order not found.");
-        return _mapper.Map<CustomerOrderDto>(order);
+        return _mapper.Map<CustomerOrderDto>(await _repository.GetOrderByIdForUser(orderId, userId));
     }
     
-    public async Task<CustomerOrderDto> GetByIdForAdmin(int id)
+    public async Task<CustomerOrderDto> GetByIdForAdmin(int orderId)
     {
-        var order = await _repository.GetOrderById(id);
-        return _mapper.Map<CustomerOrderDto>(order);
+        return _mapper.Map<CustomerOrderDto>(await _repository.GetOrderById(orderId));
     }
 
     public async Task<List<CustomerOrderDto>> GetAll()
     {
-        var orders = await _repository.GetAllOrders();
-        return _mapper.Map<List<CustomerOrderDto>>(orders);
+        return _mapper.Map<List<CustomerOrderDto>>(await _repository.GetAllOrders());
     }
 
     public async Task<List<CustomerOrderDto>> GetAllUserOrders(int userId)
     {
-        var orders = await _repository.GetAllUserOrders(userId);
-        return _mapper.Map<List<CustomerOrderDto>>(orders);
+        return _mapper.Map<List<CustomerOrderDto>>(await _repository.GetAllUserOrders(userId));
     }
 
-    public async Task DeleteById(DeleteOrderDto req)
+    public async Task CancelOrderById(DeleteOrderDto req)
     {
         var order = await _repository.GetOrderById(req.OrderId);
         
-        if (order.UserId != req.UserId)
+        if (order.UserId != req.UserId || order.IsCanceled)
             throw new UnauthorizedAccessException("Order not found.");
         
-        await _repository.DeleteAsync(order);
+        order.IsCanceled = true;
+        await _repository.SaveAsync();
     }
 }
