@@ -5,5 +5,6 @@ namespace Order.Application.Interfaces;
 
 public interface IOrderObserver
 {
-    Task OnOrderPlaced(CustomerOrderDto customerOrder);
+    Task OnOrderPlaced(CustomerOrderDto customerOrder, string email);
+    Task OnLogin(string email, string username);
 }

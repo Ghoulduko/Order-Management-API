@@ -10,19 +10,16 @@ namespace Order_Management_API.Controllers;
 public class PaymentController : ControllerBase
 {
     private readonly IPaymentService _paymentService;
-    private readonly IConfiguration _configuration;
-    private readonly int userId;
-    public PaymentController(IPaymentService paymentService, IConfiguration configuration)
+    public PaymentController(IPaymentService paymentService)
     {
         _paymentService = paymentService;
-        _configuration = configuration;
-        userId = _configuration.GetValue<int>("UserId");
     }
 
     [HttpGet("GetAllPaymentsUser")]
     public async Task<Ok<List<PaymentDto>>> GetAll()
     {
-        var payments = await _paymentService.GetAllUserPayments(userId);
+        var userId = User.FindFirst("UserId")?.Value ?? throw new Exception("You need to login first");
+        var payments = await _paymentService.GetAllUserPayments(int.Parse(userId));
         return TypedResults.Ok(payments);
     }
 
