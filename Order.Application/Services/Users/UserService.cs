@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Order.Application.Dtos.User;
 using Order.Application.Interfaces;
+using Order.Application.Interfaces.Authentication;
 using Order.Application.Interfaces.Helper;
 using Order.Core.Entities;
 using Order.Core.Exceptions;
@@ -13,17 +14,19 @@ public class UserService : IUserService
     private readonly IGenericRepository<User> _repository;
     private readonly IGenericRepository<Cart> _cartService;
     private readonly IValidator<AddUserDto> _validator;
+    private readonly ITokenService _tokenService;
     private readonly IMapper _mapper;
     
-    public UserService(IGenericRepository<User> repository, IGenericRepository<Cart> cartService, IValidator<AddUserDto> validator, IMapper mapper)
+    public UserService(IGenericRepository<User> repository, IGenericRepository<Cart> cartService, IValidator<AddUserDto> validator, ITokenService tokenService, IMapper mapper)
     {
         _repository = repository;
         _cartService = cartService;
         _validator = validator;
+        _tokenService = tokenService;
         _mapper = mapper;
     }
     
-    public async Task Add(AddUserDto req)
+    public async Task<string> Add(AddUserDto req)
     {
         req.Email = req.Email.Trim().ToLower();
         
@@ -41,26 +44,11 @@ public class UserService : IUserService
             IsDeleted = false,
         };
         
-        
         await _repository.AddAsync(newUser);
         await _cartService.AddAsync(new Cart { UserId = newUser.Id});
-    }
-
-    public async Task<UserDto> GetById(int id)
-    {
-        var user = await _repository.GetByIdAsync(id);
-        if (user == null)
-            throw new NotFoundException("No user found with the provided id");
-        return _mapper.Map<UserDto>(user);
-    }
-    
-    public async Task<UserDto> GetUserByEmail(string email)
-    {
-        email = email.Trim().ToLower();
-        var user = await _repository.GetFirstOrDefaultAsync(u => u.Email == email);
-        if (user == null)
-            throw new NotFoundException("No user found with the provided email");
-        return _mapper.Map<UserDto>(user);
+        
+        var token = _tokenService.CreateToken(_mapper.Map<UserDto>(newUser));
+        return string.IsNullOrEmpty(token) ? throw new ArgumentException("Token was not generated, try again.") : token;
     }
 
     public async Task<List<UserDto>> GetAll()
@@ -75,6 +63,23 @@ public class UserService : IUserService
         var users = await _repository.GetAllAsync();
         users = users.Where(u => u.IsDeleted).ToList();
         return _mapper.Map<List<UserDto>>(users);
+    }
+    
+    public async Task<UserDto> GetById(int id)
+    {
+        var user = await _repository.GetByIdAsync(id);
+        if (user == null)
+            throw new NotFoundException("No user found with the provided id");
+        return _mapper.Map<UserDto>(user);
+    }
+    
+    public async Task<UserDto> GetUserByEmail(string email)
+    {
+        email = email.Trim().ToLower();
+        var user = await _repository.GetSingleOrDefaultAsync(u => u.Email == email);
+        if (user == null || user.IsDeleted)
+            throw new NotFoundException("No user found with the provided email");
+        return _mapper.Map<UserDto>(user);
     }
 
     public async Task Delete(int id)

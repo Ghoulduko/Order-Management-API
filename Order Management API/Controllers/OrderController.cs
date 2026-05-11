@@ -10,26 +10,25 @@ namespace Order_Management_API.Controllers;
 public class OrderController : ControllerBase
 {
     private readonly IOrderService _orderService;
-    private readonly IConfiguration _configuration;
-    private readonly int userId;
-    public OrderController(IOrderService orderService, IConfiguration configuration)
+    public OrderController(IOrderService orderService)
     {
         _orderService = orderService;
-        _configuration = configuration;
-        userId = _configuration.GetValue<int>("UserId");
     }
 
     [HttpPost("Order")]
     public async Task<Ok<string>> AddOrder([FromBody] AddOrderDto order)
     {
-        await _orderService.Add(order.PaymentMethod, userId);
+        var userEmail = User.FindFirst("UserEmail")?.Value ?? throw new Exception("You need to login first");
+        var userId = User.FindFirst("UserId")?.Value ?? throw new Exception("You need to login first");
+        await _orderService.Add(order.PaymentMethod, int.Parse(userId), userEmail);
         return TypedResults.Ok("Your order was Successful!");
     }
 
     [HttpGet("GetAllUserOrders")]
     public async Task<Ok<List<CustomerOrderDto>>> GetAllUserOrders()
     {
-        var orders = await _orderService.GetAllUserOrders(userId);
+        var userId = User.FindFirst("UserId")?.Value ?? throw new Exception("You need to login first");
+        var orders = await _orderService.GetAllUserOrders(int.Parse(userId));
         return TypedResults.Ok(orders);
     }
 
@@ -43,7 +42,8 @@ public class OrderController : ControllerBase
     [HttpGet("GetByIdUser/{id}")]
     public async Task<Ok<CustomerOrderDto>> GetById(int id)
     {
-        var order = await _orderService.GetByIdForUser(id, userId);
+        var userId = User.FindFirst("UserId")?.Value ?? throw new Exception("You need to login first");
+        var order = await _orderService.GetByIdForUser(id, int.Parse(userId));
         return TypedResults.Ok(order);
     }
     
@@ -57,13 +57,9 @@ public class OrderController : ControllerBase
     [HttpDelete("CancelOrderById/{id}")]
     public async Task<Ok<string>> CancelOrder(int id)
     {
-        DeleteOrderDto req = new DeleteOrderDto
-        {
-            OrderId = id,
-            UserId = userId
-        };
+        var userId = User.FindFirst("UserId")?.Value ?? throw new Exception("You need to login first");
         
-        await _orderService.CancelOrderById(req);
-        return TypedResults.Ok("Successfully deleted the order");
+        await _orderService.CancelOrderById(id, int.Parse(userId));
+        return TypedResults.Ok("Successfully canceled the order");
     }
 }

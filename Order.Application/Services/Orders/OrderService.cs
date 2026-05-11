@@ -28,7 +28,7 @@ public class OrderService  : IOrderService
         _mapper = mapper;
     }
 
-    public async Task Add(PaymentMethod paymentMethod, int userId)
+    public async Task Add(PaymentMethod paymentMethod, int userId, string userEmail)
     {
         var userCart = await _cartRepository.GetUserCart(userId);
 
@@ -74,7 +74,7 @@ public class OrderService  : IOrderService
         var orderDto = _mapper.Map<CustomerOrderDto>(order);
         foreach (var observer in _observers)
         {
-            await observer.OnOrderPlaced(orderDto);
+            await observer.OnOrderPlaced(orderDto, userEmail);
         }
     }
 
@@ -98,11 +98,11 @@ public class OrderService  : IOrderService
         return _mapper.Map<List<CustomerOrderDto>>(await _repository.GetAllUserOrders(userId));
     }
 
-    public async Task CancelOrderById(DeleteOrderDto req)
+    public async Task CancelOrderById(int orderId, int userId)
     {
-        var order = await _repository.GetOrderById(req.OrderId);
+        var order = await _repository.GetOrderById(orderId);
         
-        if (order.UserId != req.UserId || order.IsCanceled)
+        if (order.UserId != userId || order.IsCanceled)
             throw new UnauthorizedAccessException("Order not found.");
         
         order.IsCanceled = true;

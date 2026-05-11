@@ -10,20 +10,17 @@ namespace Order_Management_API.Controllers;
 public class CartController : ControllerBase
 {
     private readonly ICartService _cartService;
-    private readonly IConfiguration _configuration;
-    private readonly int UserId;
 
-    public CartController(ICartService cartService, IConfiguration configuration)
+    public CartController(ICartService cartService)
     {
         _cartService = cartService;
-        _configuration = configuration;
-        UserId = _configuration.GetValue<int>("UserId");
     }
 
     [HttpPost("AddToCart")]
     public async Task<Ok<string>> AddToCart([FromBody] AddItemToCartDto req)
     {
-        await _cartService.AddToCart(UserId, req);
+        var userId = User.FindFirst("UserId")?.Value ?? throw new Exception("You need to login first");
+        await _cartService.AddToCart(int.Parse(userId), req);
         return TypedResults.Ok("Successfully added item to cart");
     }
 
@@ -42,20 +39,23 @@ public class CartController : ControllerBase
     [HttpGet("GetUserCart")]
     public async Task<Ok<CartDto>> GetUserCart()
     {
-        return TypedResults.Ok(await _cartService.GetUserCart(UserId));
+        var userId = User.FindFirst("UserId")?.Value ?? throw new Exception("You need to login first");
+        return TypedResults.Ok(await _cartService.GetUserCart(int.Parse(userId)));
     }
 
     [HttpPatch("UpdateQuantity")]
     public async Task<Ok<string>> UpdateQuantity([FromBody] UpdateCartItemQuantityDto req)
     {
-        await _cartService.UpdateQuantity(UserId, req);
+        var userId = User.FindFirst("UserId")?.Value ?? throw new Exception("You need to login first");
+        await _cartService.UpdateQuantity(int.Parse(userId), req);
         return TypedResults.Ok("Successfully updated cart");
     }
 
     [HttpDelete("RemoveFromCart/{cartItemId}")]
     public async Task<Ok<string>> RemoveFromCart(int cartItemId)
     {
-        await _cartService.RemoveFromCart(UserId, cartItemId);
+        var userId = User.FindFirst("UserId")?.Value ?? throw new Exception("You need to login first");
+        await _cartService.RemoveFromCart(int.Parse(userId), cartItemId);
         return TypedResults.Ok("Successfully removed item from cart");
     }
 }
