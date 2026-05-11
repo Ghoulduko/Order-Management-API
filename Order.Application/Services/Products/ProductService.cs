@@ -27,7 +27,7 @@ public class ProductService : IProductService
     {
         _validator.Validate(req); 
         
-        var productInDb = await _repository.GetFirstOrDefaultAsync(p => p.Name == req.Name);
+        var productInDb = await _repository.GetSingleOrDefaultAsync(p => p.Name == req.Name);
         
         if (productInDb != null)
         {
