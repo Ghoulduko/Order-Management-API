@@ -12,8 +12,11 @@ public class PaymentRepository : GenericRepository<Payment>, IPaymentRepository
     public async Task<List<Payment>> GetAllUserPayments(int userId)
     {
         return await _context.Payments
-            .Include(p => p.CustomerOrder)
-            .Include(p => p.User)
             .Where(p => p.UserId == userId).ToListAsync();
+    }
+
+    public async Task<List<Payment>> GetAllUserPaymentsAdmin()
+    {
+        return await _context.Payments.Include(p => p.User).ThenInclude(u => u.Role).ToListAsync();
     }
 }

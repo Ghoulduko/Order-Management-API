@@ -17,7 +17,8 @@ public class OrderRepository : GenericRepository<CustomerOrder>, IOrderRepositor
             .Include(o => o.Payment)
             .Include(o => o.OrderItems)
                 .ThenInclude(i => i.Product)
-            .Include(i => i.User);
+            .Include(i => i.User)
+                .ThenInclude(u => u.Role);
     }
 
     public async Task<List<CustomerOrder>> GetAllUserOrders(int userId)

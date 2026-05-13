@@ -9,6 +9,7 @@ using Order.Application.Dtos.User;
 using Order.Application.Interfaces;
 using Order.Application.Interfaces.Authentication;
 using Order.Application.Interfaces.Helper;
+using Order.Application.Interfaces.Role;
 using Order.Application.Mapper;
 using Order.Application.Services.Authentication;
 using Order.Application.Services.Carts;
@@ -16,6 +17,7 @@ using Order.Application.Services.Notifications;
 using Order.Application.Services.Orders;
 using Order.Application.Services.Payments;
 using Order.Application.Services.Products;
+using Order.Application.Services.Roles;
 using Order.Application.Services.Users;
 using Order.Core.Database;
 using Order.Core.Entities;
@@ -39,6 +41,7 @@ builder.Services.AddScoped<IGenericRepository<Payment>, GenericRepository<Paymen
 builder.Services.AddScoped<IGenericRepository<User>, GenericRepository<User>>();
 builder.Services.AddScoped<IGenericRepository<Cart>, GenericRepository<Cart>>();
 builder.Services.AddScoped<IGenericRepository<CartItem>, GenericRepository<CartItem>>();
+builder.Services.AddScoped<IGenericRepository<Role>, GenericRepository<Role>>();
 
 // Order Services
 builder.Services.AddScoped<IOrderService, OrderService>();
@@ -56,6 +59,8 @@ builder.Services.AddScoped<InventoryService>();
 
 // User Services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 
 // Payment Services
 builder.Services.AddScoped<IPaymentFactory, PaymentFactory>();

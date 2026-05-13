@@ -11,16 +11,16 @@ namespace Order.Application.Services.Users;
 
 public class UserService : IUserService
 {
-    private readonly IGenericRepository<User> _repository;
-    private readonly IGenericRepository<Cart> _cartService;
+    private readonly IUserRepository _repository;
+    private readonly ICartRepository _cartRepository;
     private readonly IValidator<AddUserDto> _validator;
     private readonly ITokenService _tokenService;
     private readonly IMapper _mapper;
     
-    public UserService(IGenericRepository<User> repository, IGenericRepository<Cart> cartService, IValidator<AddUserDto> validator, ITokenService tokenService, IMapper mapper)
+    public UserService(IUserRepository repository, ICartRepository cartRepository, IValidator<AddUserDto> validator, ITokenService tokenService, IMapper mapper)
     {
         _repository = repository;
-        _cartService = cartService;
+        _cartRepository = cartRepository;
         _validator = validator;
         _tokenService = tokenService;
         _mapper = mapper;
@@ -39,55 +39,79 @@ public class UserService : IUserService
         var newUser = new User
         {
             Username = req.Username,
-            Email = req.Email,
+            Email = req.Email.ToLower().Trim(),
             Password = BC.HashPassword(req.Password, 6),
+            RoleId = 1,
             IsDeleted = false,
         };
         
         await _repository.AddAsync(newUser);
-        await _cartService.AddAsync(new Cart { UserId = newUser.Id});
-        
-        var token = _tokenService.CreateToken(_mapper.Map<UserDto>(newUser));
+        await _cartRepository.AddAsync(new Cart { UserId = newUser.Id});
+
+        var userWithRole = await _repository.GetUserWithRoleById(newUser.Id);
+        var token = _tokenService.CreateToken(userWithRole!);
         return string.IsNullOrEmpty(token) ? throw new ArgumentException("Token was not generated, try again.") : token;
     }
 
     public async Task<List<UserDto>> GetAll()
     {
-        var users = await _repository.GetAllAsync();
+        var users = await _repository.GetAllUsers();
         users = users.Where(u => !u.IsDeleted).ToList();
+        var userDtos = users.Select(u => new UserDto
+        {
+            Id = u.Id,
+            Username = u.Username,
+            Email = u.Email,
+            RoleName = u.Role.Name,
+        });
         return _mapper.Map<List<UserDto>>(users);
     }
 
     public async Task<List<UserDto>> GetAllDeletedAccounts()
     {
-        var users = await _repository.GetAllAsync();
+        var users = await _repository.GetAllUsers();
         users = users.Where(u => u.IsDeleted).ToList();
+        var userDtos = users.Select(u => new UserDto
+        {
+            Id = u.Id,
+            Username = u.Username,
+            Email = u.Email,
+            RoleName = u.Role.Name,
+        });
         return _mapper.Map<List<UserDto>>(users);
     }
     
     public async Task<UserDto> GetById(int id)
     {
-        var user = await _repository.GetByIdAsync(id);
+        var user = await _repository.GetUserWithRoleById(id);
         if (user == null)
             throw new NotFoundException("No user found with the provided id");
-        return _mapper.Map<UserDto>(user);
+        
+        var userDto = _mapper.Map<UserDto>(user);
+        userDto.RoleName = user.Role.Name;
+        
+        return userDto;
     }
     
     public async Task<UserDto> GetUserByEmail(string email)
     {
-        email = email.Trim().ToLower();
-        var user = await _repository.GetSingleOrDefaultAsync(u => u.Email == email);
+        var user = await _repository.GetUserByEmail(email.ToLower().Trim());
         if (user == null || user.IsDeleted)
             throw new NotFoundException("No user found with the provided email");
-        return _mapper.Map<UserDto>(user);
+        
+        var userDto = _mapper.Map<UserDto>(user);
+        userDto.RoleName = user.Role.Name;
+        
+        return _mapper.Map<UserDto>(userDto);
     }
 
-    public async Task Delete(int id)
+    public async Task Delete(int userId)
     {
-        var user = await _repository.GetByIdAsync(id);
+        var user = await _repository.GetByIdAsync(userId);
         if (user == null || user.IsDeleted)
             throw new NotFoundException("No user found with the provided id");
         user.IsDeleted = true;
+        await _cartRepository.ClearCart(userId);
         await _repository.SaveAsync();
     }
 }

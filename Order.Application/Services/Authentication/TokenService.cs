@@ -3,8 +3,8 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Order.Application.Dtos.User;
 using Order.Application.Interfaces.Authentication;
+using Order.Core.Entities;
 using Order.Core.Exceptions;
 
 namespace Order.Application.Services.Authentication;
@@ -17,13 +17,14 @@ public class TokenService : ITokenService
         _configuration = configuration;
     }
 
-    public string CreateToken(UserDto user)
+    public string CreateToken(User user)
     {
         var claims = new List<Claim>
         {
             new Claim("UserId", user.Id.ToString()),
             new Claim("Email", user.Email),
-            new Claim("SignInTime", DateTime.Now.ToString())
+            new Claim("SignInTime", DateTime.Now.ToString()),
+            new Claim(ClaimTypes.Role, user.Role.Name),
         };
 
         var secretKey = _configuration["jwtSecretKey"] ?? throw new JwtKeyNotFoundException("No secret key found.");

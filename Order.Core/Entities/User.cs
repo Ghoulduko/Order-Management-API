@@ -8,8 +8,17 @@ public class User
 {
     [Key]
     public int Id { get; set; }
-    public string Username { get; set; }
-    public string Email { get; set; }
-    public string Password { get; set; }
+    
+    [Required]
+    [Length(3, 10)]
+    public required string Username { get; set; }
+    [Required]
+    public required string Email { get; set; }
+    [Required]
+    [Length(8, 22)]
+    public required string Password { get; set; }
+    [Required]
+    public int RoleId { get; set; }
+    public Role? Role { get; set; }
     public bool IsDeleted { get; set; } = false;
 }

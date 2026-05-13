@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Order.Application.Dtos.Payment;
 using Order.Application.Dtos.Product;
@@ -18,6 +19,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost("AddProduct")]
+    [Authorize(Roles = "OWNER,INVENTORY_MANAGER")]
     public async Task<Ok<string>> AddProduct([FromBody] AddProductDto req)
     {
         await _productService.Add(req);
@@ -25,14 +27,13 @@ public class ProductController : ControllerBase
     }
 
     [HttpPatch("IncreaseStock")]
+    [Authorize(Roles = "OWNER,INVENTORY_MANAGER")]
     public async Task<Ok<string>> IncreaseStock([FromBody] UpdateProductStockDto req)
     {
         await _productService.IncreaseStock(req);
         return TypedResults.Ok($"Successfully increased product stock by: {req.quantity}");
     }
-
     
-
     [HttpGet("GetAll")]
     public async Task<Ok<List<ProductDto>>> GetAll()
     {
@@ -54,6 +55,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpDelete("DeleteById/{id}")]
+    [Authorize(Roles = "OWNER,INVENTORY_MANAGER")]
     public async Task<Ok<string>> DeleteById(int id)
     {
         await _productService.Delete(id);
