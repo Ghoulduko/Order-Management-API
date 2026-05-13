@@ -1,4 +1,5 @@
 ﻿using Order.Application.Dtos.User;
+using Order.Core.Entities;
 
 namespace Order.Application.Interfaces;
 
@@ -9,5 +10,5 @@ public interface IUserService
     Task<List<UserDto>> GetAllDeletedAccounts();
     Task<UserDto> GetById(int id);
     Task<UserDto> GetUserByEmail(string email);
-    Task Delete(int id);
+    Task Delete(int userId);
 }

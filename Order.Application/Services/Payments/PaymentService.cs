@@ -31,10 +31,10 @@ public class PaymentService : IPaymentService
         return _mapper.Map<PaymentDto>(payment);
     }
 
-    public async Task<List<PaymentDto>> GetAll()
+    public async Task<List<PaymentWithUserDto>> GetAll()
     {
-        var payments = await _repository.GetAllAsync();
-        return _mapper.Map<List<PaymentDto>>(payments);
+        var payments = await _repository.GetAllUserPaymentsAdmin();
+        return _mapper.Map<List<PaymentWithUserDto>>(payments);
     }
 
     public async Task<List<PaymentDto>> GetAllUserPayments(int userId)

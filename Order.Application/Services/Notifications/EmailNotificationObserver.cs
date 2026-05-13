@@ -52,7 +52,7 @@ public class EmailNotificationObserver : IOrderObserver
                           <div style=""margin:18px 0 10px; text-align:center;"">
                             <div style=""display:inline-block; padding:14px 18px; border-radius:12px; background:#f3f4f6; border:1px solid #e5e7eb;"">
                               <span style=""font-size:16px; font-weight:700; color:#111827;"">
-                                Order Total: {customerOrder.Total:C}<br/>
+                                Order Total: {customerOrder.Payment.Amount:C}<br/>
                                 Order Date: {customerOrder.CreatedAt}<br/>
                                 Order ID: #{customerOrder.Id}
                               </span>

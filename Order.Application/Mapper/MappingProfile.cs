@@ -3,6 +3,7 @@ using Order.Application.Dtos.Cart;
 using Order.Application.Dtos.Order;
 using Order.Application.Dtos.Payment;
 using Order.Application.Dtos.Product;
+using Order.Application.Dtos.Role;
 using Order.Application.Dtos.User;
 using Order.Core.Entities;
 
@@ -31,9 +32,13 @@ public class MappingProfile : Profile
         // Payment Mapping
         CreateMap<PaymentDto, Payment>().ReverseMap();
         CreateMap<AddPaymentDto, Payment>().ReverseMap();
+        CreateMap<PaymentWithUserDto, Payment>().ReverseMap();
         
         // User Mapping
         CreateMap<UserDto, User>().ReverseMap();
         CreateMap<AddUserDto, User>().ReverseMap();
+        
+        // Role Mapping
+        CreateMap<RoleDto, Role>().ReverseMap();
     }
 }

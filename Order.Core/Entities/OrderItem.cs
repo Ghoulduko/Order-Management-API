@@ -8,11 +8,15 @@ public class OrderItem
 {
     [Key]
     public int Id { get; set; }
-    public int Quantity { get; set; }
     
+    [Required]
+    public required int Quantity { get; set; }
+    
+    [Required]
     public int CustomerOrderId { get; set; }
     public CustomerOrder CustomerOrder { get; set; }
     
-    public int ProductId { get; set; }
+    [Required]
+    public required int ProductId { get; set; }
     public Product Product { get; set; }
 }

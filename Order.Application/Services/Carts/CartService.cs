@@ -95,7 +95,7 @@ public class CartService : ICartService
     public async Task UpdateQuantity(int userId, UpdateCartItemQuantityDto req)
     {
         var cart = await _cartRepository.GetCartForModifying(userId);
-        var cartItem = cart.CartItems.FirstOrDefault(c => c.Id == req.CartItemId);
+        var cartItem = cart.CartItems.FirstOrDefault(c => c.Id == req.CartItemId && c.CartId == cart.Id);
         if (cartItem == null)
             throw new NotFoundException("No changeable item found in cart.");
         
